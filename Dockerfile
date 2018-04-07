@@ -1,7 +1,7 @@
 FROM debian:testing
 
 RUN mkdir /data /config; apt-get update; \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y dumb-init openssh-server sssd-ldap
+  DEBIAN_FRONTEND=noninteractive apt-get install -y dumb-init openssh-server sssd-ldap sudo
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 

@@ -13,5 +13,8 @@ Requires a configmap with the file `banner` to use as the SSH banner. Mount on
 If persisted storage is mounted on /data/ host keys will be persisted across
 restarts.
 
-Set the environment variable `KJELL_ALLOWED_GROUP` to the group you want to
+Set the environment variable `KJELL_ACCESS_GROUP` to the group you want to
 allow to login to the system.
+
+Set the environment variable `KJELL_SUDO_GROUP` to the group you want to
+allow to have sudo to the system.
