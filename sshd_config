@@ -1,10 +1,5 @@
 Port 22
 Protocol 2
-UsePrivilegeSeparation yes
-
-# Lifetime and size of ephemeral version 1 server key
-KeyRegenerationInterval 3600
-ServerKeyBits 768
 
 LogLevel INFO
 
@@ -12,8 +7,6 @@ LoginGraceTime 120
 PermitRootLogin no
 StrictModes yes
 
-RSAAuthentication yes
-PubkeyAuthentication yes
 AuthorizedKeysFile      "/ldap/ou=people/cn=%u/sshPublicKey"
 
 IgnoreRhosts yes
@@ -38,3 +31,5 @@ AcceptEnv LANG LC_*
 Subsystem sftp /usr/lib/openssh/sftp-server
 
 UsePAM yes
+AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys
+AuthorizedKeysCommandUser nobody

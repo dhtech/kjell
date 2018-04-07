@@ -10,4 +10,6 @@ ADD sssd.conf /etc/sssd/
 ADD sshd.sh /
 ADD nsswitch.conf /etc/
 
+RUN chmod 0400 /etc/sssd/sssd.conf
+
 CMD ["/sshd.sh"]
