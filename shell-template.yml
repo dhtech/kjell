@@ -1,0 +1,76 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: kjell
+    kjell-user: "{user}"
+  name: kjell-{user}
+  namespace: kjell
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: kjell
+        kjell-user: "{user}"
+    spec:
+      containers:
+      - image: quay.io/dhtech/kjell
+        imagePullPolicy: Always
+        name: kjell
+        volumeMounts:
+          - mountPath: "/home"
+            name: kjell-data
+          - mountPath: "/data"
+            name: kjell-sshd-key
+        env:
+          - name: KJELL_SUDO_GROUP
+            value: "{user}"
+          - name: KJELL_ACCESS_GROUP
+            value: "{user}"
+        readinessProbe:
+          tcpSocket:
+            port: 22
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 22
+          initialDelaySeconds: 15
+      restartPolicy: Always
+      volumes:
+        - name: kjell-data
+          persistentVolumeClaim:
+            claimName: kjell-{user}-data
+        - name: kjell-sshd-key
+          persistentVolumeClaim:
+            claimName: kjell-{user}-keys
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kjell-{user}-data
+  namespace: kjell
+  labels:
+    k8s-app: kjell
+    kjell-user: "{user}"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kjell-{user}-keys
+  namespace: kjell
+  labels:
+    k8s-app: kjell
+    kjell-user: "{user}"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
