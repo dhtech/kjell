@@ -11,6 +11,7 @@ ADD sshd.sh /
 ADD nsswitch.conf /etc/
 ADD my-shell /usr/local/bin/
 ADD shell-template.yml /etc/
+ADD my-shell-sudo /etc/sudoers.d/
 
 RUN chmod 0400 /etc/sssd/sssd.conf
 
