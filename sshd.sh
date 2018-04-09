@@ -24,5 +24,17 @@ do
 done
 echo '- : ALL : ALL' >> /etc/security/access.conf
 
+# Lockdown secrets
+chmod 700 /run/secrets
+
+# Convert secrets to kubectl config
+# This is used for my-shell and convenience
+kubectl config set-cluster local --server=https://kubernetes.default \
+  --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt
+kubectl config set-credentials sa \
+  --token=$(</run/secrets/kubernetes.io/serviceaccount/token)
+kubectl config set-context local --cluster=local --user=sa
+kubectl config use-context local
+
 /usr/sbin/sssd -D
 exec /usr/sbin/sshd -De -h /data/host-key.ecdsa
