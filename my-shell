@@ -1,38 +1,55 @@
 #!/usr/bin/env python3.6
 # Produces a socket connection to a user's shell server or provisions one
 # if there is none.
-# Usage: $0 <server_template.yml>
+
 import os
 import subprocess
 import sys
+import time
+import yaml
 
-TOKEN_FILE = '/run/secrets/kubernetes.io/serviceaccount/token'
-
-
-def main(template):
-    user = os.environ['USER'])
-    with open(TOKEN_FILE, 'r') as f:
-        token = f.read()
-
-def list_shells(token):
-    # TOOD
-    pass
+NETCAT = '/usr/bin/nc'
+KUBECTL = '/usr/local/bin/kubectl'
+TEMPLATE = '/etc/shell-template.yml'
 
 
-def provision(template, user):
-    with open(template, 'r') as f:
+def main():
+    user = os.environ['SUDO_USER']
+    shell = find_shell(user)
+    if shell is None:
+        provision(user)
+        print('Waiting for new shell to start, please wait...', file=sys.stderr)
+        sys.stderr.flush()
+        while find_shell(user) is None:
+            time.sleep(1)
+        shell = find_shell(user)
+    os.execv(NETCAT, [NETCAT, shell, '22'])
+
+
+def find_shell(user):
+    result = subprocess.run(
+            [KUBECTL, 'get', 'pod', '-n', 'kjell', '-o', 'yaml',
+             '-l', 'kjell-user=' + user], stdout=subprocess.PIPE)
+    data = yaml.safe_load(result.stdout)
+    if not data['items']:
+        return None
+    return data['items'][0]['status'].get('podIP', None)
+
+
+def provision(user):
+    with open(TEMPLATE, 'r') as f:
         template = f.read()
 
     kubectl = subprocess.Popen(
-            ['kubectl', 'apply', '-f', '-'],
+            [KUBECTL, 'apply', '-f', '-'],
             stdout=subprocess.PIPE, stdin=subprocess.PIPE)
     config = template.format(user=user)
     (out, err) = kubectl.communicate(config.encode())
     if err:
-        print('Unable to provision shell, sorry :(')
+        print('Unable to provision shell, sorry :(', file=sys.stderr)
         sys.exit(1)
-    print(out.decode())
+    print(out.decode(), file=sys.stderr)
 
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    main()
