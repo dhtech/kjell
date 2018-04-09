@@ -1,7 +1,7 @@
 FROM debian:testing
 
 RUN mkdir /data /config; apt-get update; \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y dumb-init openssh-server sssd-ldap sudo
+  DEBIAN_FRONTEND=noninteractive apt-get install -y dumb-init openssh-server sssd-ldap sudo curl vim
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl; \
   mv kubectl /usr/local/bin/; chmod +x /usr/local/bin/kubectl
 
