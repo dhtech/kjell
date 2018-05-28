@@ -13,6 +13,9 @@ ADD nsswitch.conf /etc/
 ADD my-shell /usr/local/bin/
 ADD shell-template.yml /etc/
 ADD my-shell-sudo /etc/sudoers.d/
+ADD ca.crt /usr/share/ca-certificates/ca.crt
+RUN echo "ca.crt" > /etc/ca-certificates.conf
+RUN /usr/sbin/update-ca-certificates
 
 RUN chmod 0400 /etc/sssd/sssd.conf
 
