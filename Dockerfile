@@ -6,6 +6,7 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s
   mv kubectl /usr/local/bin/; chmod +x /usr/local/bin/kubectl
 
 ADD sshd_config /etc/ssh/
+ADD ssh_ca.pub /etc/ssh/
 ADD sssd.conf /etc/sssd/
 ADD sshd.sh /
 ADD nsswitch.conf /etc/

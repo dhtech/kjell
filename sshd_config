@@ -33,3 +33,5 @@ Subsystem sftp /usr/lib/openssh/sftp-server
 UsePAM yes
 AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys
 AuthorizedKeysCommandUser nobody
+
+TrustedUserCAKeys /etc/ssh/ssh_ca.pub
