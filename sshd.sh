@@ -14,7 +14,7 @@ echo 'account required pam_access.so' >> /etc/pam.d/common-account
 
 for group in ${KJELL_SUDO_GROUP}
 do
-  echo "%${group} ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/kjell
+  echo "${group} ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/kjell
 done
 
 echo '+ : root : LOCAL' > /etc/security/access.conf
